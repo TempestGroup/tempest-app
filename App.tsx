@@ -1,4 +1,3 @@
-// @ts-ignore
 import React from 'react';
 import AppNavigator from './src/core/shared/navigation.shared';
 
