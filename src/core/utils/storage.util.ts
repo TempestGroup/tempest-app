@@ -24,6 +24,4 @@ class StorageUtil {
   };
 }
 
-const storageUtil = new StorageUtil();
-
-export default storageUtil;
+export default new StorageUtil();

@@ -12,12 +12,13 @@ import authService from "../../../core/services/auth.service.ts";
 
 const LoginComponent = ({ navigation }: any) => {
   const [request, setRequest] = useState(new LoginRequest());
+  const [result, setResult] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     authService.login(request).then(response => {
-      console.log(response)
-      toastUtil.showToast(response);
-    })
+      setResult(JSON.stringify(response));
+    });
+
     // blockUiUtil.show();
     //
     // toastUtil.showToast({ content: 'SHadik tazik', type: 'WARNING' })
@@ -34,6 +35,7 @@ const LoginComponent = ({ navigation }: any) => {
       <View>
         <FlexView>
           <HeaderText>Login page</HeaderText>
+          <Text>{result}</Text>
           <SizedBox line={4}/>
           <ITextField placeholder={'Username'} textContentType={'username'} value={request.username}
                               onChangeText={(username: string) => setRequest({ ...request, username })}/>

@@ -1,44 +1,70 @@
-import axios, { AxiosResponse } from 'axios';
-import authService from '../services/auth.service';
-import storageUtil from '../utils/storage.util';
+import StorageUtil from '../utils/storage.util';
+// @ts-ignore
+import { process } from 'react-native-dotenv';
 
 const getToken = () => {
-  return storageUtil.getString('user.token.access') == undefined ? null : storageUtil.getString('user.token.access');
+  return StorageUtil.getString('user.token.access') == undefined ? null : StorageUtil.getString('user.token.access');
 }
 
 const getLanguage = () => {
-  return storageUtil.getString('app.language') == undefined ? 'ru' : storageUtil.getString('app.language');
+  return StorageUtil.getString('app.language') == undefined ? 'ru' : StorageUtil.getString('app.language');
 }
 
-function onRequestSuccess(config: any) {
-  config.headers.Token = getToken();
-  config.headers.Language = getLanguage();
-  return config;
+const getUrl = (url: string, params: any = {}) => {
+  const baseUrl = new URL(url);
+  Object.keys(params).forEach(key => baseUrl.searchParams.append(key, params[key]));
+  return baseUrl;
 }
 
-function onRequestError(error: any) {
-  return Promise.reject(error);
-}
-
-function onResponseSuccess(response: AxiosResponse) {
-    return response.data;
-}
-
-function onResponseError(error: any) {
-  if (error.response && (error.response.status == 401 || error.response.status == 403)) {
-    authService.refreshToken().then(response => {
-      storageUtil.save('user.token.access', response.data.accessToken);
-      storageUtil.save('user.token.refresh', response.data.refreshToken);
-    });
+function api(url: string, method: string = 'GET', params: any = {}, body: any = null, withToken: boolean = true, options: any = {}) {
+  let headers: any = {
+    'Content-Type': 'application/json',
+    'Language': getLanguage()
+  };
+  if (withToken) {
+    headers['Token'] = getToken();
   }
-  return Promise.reject(error);
+  options.headers = { ...headers, ...options.headers };
+  options.method = method;
+  options.body = body;
+  const baseUrl = getUrl(process.env.api_url + url, params);
+  console.log('Fetching:', baseUrl, options);
+  return fetch(getUrl(process.env.api_url + url, params), options)
+    .then(response => {
+      return response.json();
+    }).catch(async error => {
+      console.log(error)
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        try {
+          const response: any = await fetch(process.env.api_url + '/api/v1/auth/refresh');
+          StorageUtil.save('user.token.access', response.json().accessToken);
+          StorageUtil.save('user.token.refresh', response.json().refreshToken);
+        } catch (refreshError) {
+          console.error('Fetch Error:', refreshError);
+          throw refreshError;
+        }
+      }
+      console.error('Fetch Error:', error);
+      throw error;
+    });
 }
 
-const api = axios.create({
-  baseURL: process.env.api_url,
-});
+class Api {
+  post = (url: string, withToken: boolean = true, body: any) => {
+    return api(url, 'POST', {}, body, withToken, {});
+  }
 
-api.interceptors.request.use(onRequestSuccess, onRequestError);
-api.interceptors.response.use(onResponseSuccess, onResponseError);
+  get = (url: string, withToken: boolean = true, params: any = {}) => {
+    return api(url, 'GET', params, {}, withToken, {});
+  }
 
-export default api;
+  put = (url: string, withToken: boolean = true, params: any = {}, body: any = {}) => {
+    return api(url, 'PUT', params, body, withToken, {});
+  }
+
+  delete = (url: string, withToken: boolean = true, params: any = {}) => {
+    return api(url, 'DELETE', params, {}, withToken, {});
+  }
+}
+
+export default new Api();
