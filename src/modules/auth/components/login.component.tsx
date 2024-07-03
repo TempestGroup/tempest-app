@@ -7,19 +7,25 @@ import ITextField from "../../../core/shared/components/text-field.component.tsx
 import IButton from "../../../core/shared/components/button.component.tsx";
 import blockUiUtil from "../../../core/utils/block-ui.util.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
+import authService from "../../../core/services/auth.service.ts";
 
 
 const LoginComponent = ({ navigation }: any) => {
   const [request, setRequest] = useState(new LoginRequest());
 
   const handleSubmit = () => {
-    blockUiUtil.show();
+    authService.login(request).then(response => {
+      console.log(response)
+      toastUtil.showToast(response);
+    })
+    // blockUiUtil.show();
+    //
+    // toastUtil.showToast({ content: 'SHadik tazik', type: 'WARNING' })
+    //
+    // setTimeout(() => {
+    //   blockUiUtil.hide();
+    // }, 1000);
 
-    toastUtil.showToast({ content: 'SHadik tazik', type: 'WARNING' })
-
-    setTimeout(() => {
-      blockUiUtil.hide();
-    }, 1000);
     navigation.navigate('main');
   }
 

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import userService from '../services/auth.service';
+import authService from '../services/auth.service';
 import storageUtil from '../utils/storage.util';
 
 const getToken = () => {
@@ -26,7 +26,7 @@ function onResponseSuccess(response: AxiosResponse) {
 
 function onResponseError(error: any) {
   if (error.response && (error.response.status == 401 || error.response.status == 403)) {
-    userService.refreshToken().then(response => {
+    authService.refreshToken().then(response => {
       storageUtil.save('user.token.access', response.data.accessToken);
       storageUtil.save('user.token.refresh', response.data.refreshToken);
     });

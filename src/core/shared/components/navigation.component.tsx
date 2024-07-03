@@ -2,12 +2,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { enableScreens } from 'react-native-screens';
-import LoginComponent from '../../modules/auth/components/login.component';
-import RegisterComponent from '../../modules/auth/components/register.component';
+import LoginComponent from '../../../modules/auth/components/login.component.tsx';
+import RegisterComponent from '../../../modules/auth/components/register.component.tsx';
 import Toast from "react-native-toast-message";
-import ILoader from "./components/loader.component.tsx";
-import IToast from "./components/toast.component.tsx";
-import MainComponent from "../../modules/main/components/main.component.tsx";
+import ILoader from "./loader.component.tsx";
+import IToast from "./toast.component.tsx";
+import MainComponent from "../../../modules/main/components/main.component.tsx";
 
 enableScreens();
 
