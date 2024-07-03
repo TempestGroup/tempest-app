@@ -1,22 +1,22 @@
 import StorageUtil from '../utils/storage.util';
 // @ts-ignore
 import { process } from 'react-native-dotenv';
+import StringUtil from "../utils/string.util.ts";
 
 const getToken = () => {
   return StorageUtil.getString('user.token.access') == undefined ? null : StorageUtil.getString('user.token.access');
 }
 
 const getLanguage = () => {
-  return StorageUtil.getString('app.language') == undefined ? 'ru' : StorageUtil.getString('app.language');
+  return StorageUtil.getString('app.language') == undefined ? 'en' : StorageUtil.getString('app.language');
 }
 
 const getUrl = (url: string, params: any = {}) => {
-  const baseUrl = new URL(url);
-  Object.keys(params).forEach(key => baseUrl.searchParams.append(key, params[key]));
-  return baseUrl;
+  let queryParams = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+  return url + (queryParams ? '?' + queryParams : '');
 }
 
-function api(url: string, method: string = 'GET', params: any = {}, body: any = null, withToken: boolean = true, options: any = {}) {
+function api(url: string, method: string = 'GET', params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}) {
   let headers: any = {
     'Content-Type': 'application/json',
     'Language': getLanguage()
@@ -26,10 +26,10 @@ function api(url: string, method: string = 'GET', params: any = {}, body: any = 
   }
   options.headers = { ...headers, ...options.headers };
   options.method = method;
-  options.body = body;
+  options.body = JSON.stringify(body);
   const baseUrl = getUrl(process.env.api_url + url, params);
   console.log('Fetching:', baseUrl, options);
-  return fetch(getUrl(process.env.api_url + url, params), options)
+  return fetch(baseUrl, options)
     .then(response => {
       return response.json();
     }).catch(async error => {

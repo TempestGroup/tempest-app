@@ -42,6 +42,8 @@ const LoginComponent = ({ navigation }: any) => {
           <ITextField placeholder={'Password'} textContentType={'password'} value={request.password}
                               onChangeText={(password: string) => setRequest({ ...request, password })} />
           <IButton title="Login" onPress={handleSubmit}/>
+          <SizedBox line={2}/>
+          <TouchableOpacity onPress={() => navigation.navigate('register')}><Text>Do not have an account?</Text></TouchableOpacity>
         </FlexView>
       </View>
     </SafeAreaView>

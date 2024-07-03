@@ -13,9 +13,8 @@ const RegisterComponent = () => {
     <SafeAreaView>
      <View>
       <FlexView>
-        <HeaderText>Login page</HeaderText>
-      </FlexView>
-      <FlexView>
+        <HeaderText>Register page</HeaderText>
+
 
       </FlexView>
      </View>
