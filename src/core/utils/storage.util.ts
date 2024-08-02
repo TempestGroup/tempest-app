@@ -2,6 +2,11 @@ import { MMKV } from 'react-native-mmkv';
 
 class StorageUtil {
 
+  LANGUAGE = 'app.language';
+  DEFAULT_LANGUAGE = 'ru';
+  USER_ACCESS_TOKEN = 'user.token.access';
+  USER_REFRESH_TOKEN = 'user.token.refresh';
+
   storage: MMKV = new MMKV();
   save (key: string, value: any) {
     this.storage.set(key, value);
