@@ -3,6 +3,11 @@ const enums = {
     SUCCESS: 'green',
     WARNING: 'yellow',
     ERROR: 'red'
+  },
+  MessageStatus: {
+    SUCCESS: 'SUCCESS',
+    WARNING: 'WARNING',
+    ERROR: 'ERROR'
   }
 };
 

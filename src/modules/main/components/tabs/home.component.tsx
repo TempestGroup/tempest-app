@@ -1,9 +1,10 @@
 import React from 'react';
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 const HomeComponent = () => {
   return (
     <View>
+      <Text>Home component</Text>
     </View>
   );
 }

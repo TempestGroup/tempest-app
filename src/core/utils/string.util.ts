@@ -9,6 +9,16 @@ class StringUtil {
     return !this.isEmpty(s);
   }
 
+  static getNumberOfLines(s: string) {
+    if (this.isEmpty(s)) {
+      return 0;
+    }
+    if (!s.includes('\n')) {
+      return 1;
+    }
+    return s.split('\n').length;
+  }
+
 }
 
 export default StringUtil;

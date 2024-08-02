@@ -8,26 +8,25 @@ import IButton from "../../../core/shared/components/button.component.tsx";
 import blockUiUtil from "../../../core/utils/block-ui.util.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import authService from "../../../core/services/auth.service.ts";
+import enums from "../../../core/enums/enums.ts";
 
 
 const LoginComponent = ({ navigation }: any) => {
   const [request, setRequest] = useState(new LoginRequest());
-  const [result, setResult] = useState('');
 
   const handleSubmit = async () => {
+    blockUiUtil.show();
     authService.login(request).then(response => {
-      setResult(JSON.stringify(response));
+      if (response.message.status == enums.MessageStatus.ERROR) {
+        toastUtil.showToast(response.message);
+        blockUiUtil.hide();
+      } else {
+        toastUtil.showToast(response.message);
+        blockUiUtil.hide();
+        navigation.navigate('main');
+      }
     });
-
-    // blockUiUtil.show();
-    //
-    // toastUtil.showToast({ content: 'SHadik tazik', type: 'WARNING' })
-    //
-    // setTimeout(() => {
-    //   blockUiUtil.hide();
-    // }, 1000);
-
-    navigation.navigate('main');
+    //navigation.navigate('main');
   }
 
   return (
@@ -35,13 +34,12 @@ const LoginComponent = ({ navigation }: any) => {
       <View>
         <FlexView>
           <HeaderText>Login page</HeaderText>
-          <Text>{result}</Text>
           <SizedBox line={4}/>
-          <ITextField placeholder={'Username'} textContentType={'username'} value={request.username}
+          <ITextField placeholder={'Email'} textContentType={'email'} value={request.username}
                               onChangeText={(username: string) => setRequest({ ...request, username })}/>
           <ITextField placeholder={'Password'} textContentType={'password'} value={request.password}
                               onChangeText={(password: string) => setRequest({ ...request, password })} />
-          <IButton title="Login" onPress={handleSubmit}/>
+          <IButton title="Sign in" onPress={handleSubmit}/>
           <SizedBox line={2}/>
           <TouchableOpacity onPress={() => navigation.navigate('register')}><Text>Do not have an account?</Text></TouchableOpacity>
         </FlexView>

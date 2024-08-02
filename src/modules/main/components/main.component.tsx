@@ -1,25 +1,42 @@
 import React from 'react';
-import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import HomeComponent from "./tabs/home.component.tsx";
-import IIcon from "../../../core/shared/components/icon.component.tsx";
+import MenuComponent from "./tabs/menu.component.tsx";
+import ProfileComponent from "./tabs/profile.component.tsx";
+import ChatComponent from "./tabs/chat.component.tsx";
+import QRComponent from "./tabs/qr.component.tsx";
+import TabNavigatorComponent from "../../../core/shared/components/tab-natigator.component.tsx";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-const tabs = new Map<string, string>([
-  ['home', 'home'],
-  ['chat', 'chat'],
-  ['profile', 'profile']
-]);
-
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const MainComponent = () => {
   return (
-    <Tab.Navigator initialRouteName="Home" activeColor="blue" inactiveColor="gray" barStyle={{ backgroundColor: 'white' }}
-     screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color }) => {
-        return <IIcon name={`${tabs.get(route.name)}`} size={24} color={color} />;
-      },
-    })}>
-      <Tab.Screen name={ 'home' } options={{ title: 'Home' }} component={ HomeComponent }/>
+    <Tab.Navigator initialRouteName="Home" tabBar={(props: any) => <TabNavigatorComponent {...props} />}>
+      <Tab.Screen
+        name={ 'home' }
+        options={{ title: 'Home' }}
+        component={ HomeComponent }
+      />
+      <Tab.Screen
+        name={ 'menu' }
+        options={{ title: 'Menu' }}
+        component={ MenuComponent }
+      />
+      <Tab.Screen
+        name={ 'qr-code' }
+        options={{ title: 'QR' }}
+        component={ QRComponent }
+      />
+      <Tab.Screen
+        name={ 'chatbubbles' }
+        options={{ title: 'Chat' }}
+        component={ ChatComponent }
+      />
+      <Tab.Screen
+        name={ 'person' }
+        options={{ title: 'Profile' }}
+        component={ ProfileComponent }
+      />
     </Tab.Navigator>
   );
 }

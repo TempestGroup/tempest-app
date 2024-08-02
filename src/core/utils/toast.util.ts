@@ -5,7 +5,7 @@ class ToastUtil {
 
   showToast = (message: any) => {
     Toast.show({
-      type: message.type,
+      type: message.status,
       text1: message.content
     });
   }
