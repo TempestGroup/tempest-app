@@ -8,6 +8,15 @@ const enums = {
     SUCCESS: 'SUCCESS',
     WARNING: 'WARNING',
     ERROR: 'ERROR'
+  },
+  Direction: {
+    ASC: 'ASC',
+    DESC: 'DESC'
+  },
+  Language: {
+    KK: 'kk',
+    RU: 'ru',
+    EN: 'en'
   }
 };
 
