@@ -6,6 +6,7 @@ class StorageUtil {
   DEFAULT_LANGUAGE = 'ru';
   USER_ACCESS_TOKEN = 'user.token.access';
   USER_REFRESH_TOKEN = 'user.token.refresh';
+  USER_ID = 'user.id';
 
   storage: MMKV = new MMKV();
   save (key: string, value: any) {

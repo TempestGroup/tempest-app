@@ -9,21 +9,44 @@ import blockUiUtil from "../../../core/utils/block-ui.util.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import authService from "../../../core/services/auth.service.ts";
 import enums from "../../../core/enums/enums.ts";
+import StorageUtil from "../../../core/utils/storage.util.ts";
+import ApiConfig from "../../../core/configs/api.config.ts";
+import SharedPreferencesUtil from "../../../core/utils/shared-preferences.util.ts";
 
 
 const LoginComponent = ({ navigation }: any) => {
   const [request, setRequest] = useState(new LoginRequest());
 
+  const getRefreshOptions = (method: string = 'POST', options: any = {}, withToken: boolean = true, token: string) => {
+    let headers = {
+      'Content-Type': 'application/json',
+      Language: 'ru',
+      ...options.headers
+    };
+    if (withToken) {
+      headers.Token = token;
+    }
+    return {
+      method: method,
+      headers,
+      ...options
+    }
+  }
+
   const handleSubmit = async () => {
     blockUiUtil.show();
-    authService.login(request).then(response => {
+    authService.login(request).then(async response => {
       if (response.message.status == enums.MessageStatus.ERROR) {
         toastUtil.showToast(response.message);
         blockUiUtil.hide();
       } else {
-        toastUtil.showToast(response.message);
-        blockUiUtil.hide();
-        navigation.navigate('main');
+        SharedPreferencesUtil.set(SharedPreferencesUtil.USER_MOBILE_TOKEN, response.token.mobileToken).then(ignored => {
+          StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+          StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+          toastUtil.showToast(response.message);
+          blockUiUtil.hide();
+          navigation.navigate('main');
+        });
       }
     });
     //navigation.navigate('main');

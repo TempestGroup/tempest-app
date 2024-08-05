@@ -19,6 +19,10 @@ class StringUtil {
     return s.split('\n').length;
   }
 
+  static join(collection: [], separator: string) {
+    return collection.join(separator);
+  }
+
 }
 
 export default StringUtil;

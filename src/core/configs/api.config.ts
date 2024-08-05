@@ -25,6 +25,10 @@ const getToken = () => {
   return StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN);
 }
 
+const getRefreshToken = () => {
+  return StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN);
+}
+
 const getLanguage = () => {
   return StorageUtil.getString(StorageUtil.LANGUAGE) == undefined ? StorageUtil.DEFAULT_LANGUAGE : StorageUtil.getString(StorageUtil.LANGUAGE);
 }
@@ -51,9 +55,30 @@ const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: an
   if (withToken) {
     headers.Token = getToken();
   }
+  if (body != null && Object.keys(body).length > 0) {
+    options.body = getBody(body);
+  }
   return {
     method: method,
-    body: getBody(body),
+    headers,
+    ...options
+  }
+}
+
+const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
+  let headers = {
+    'Content-Type': getContentType(body),
+    Language: getLanguage(),
+    ...options.headers
+  };
+  if (withToken) {
+    headers.Token = getRefreshToken();
+  }
+  if (body != null && Object.keys(body).length > 0) {
+    options.body = getBody(body);
+  }
+  return {
+    method: method,
     headers,
     ...options
   }
@@ -65,13 +90,12 @@ function api(url: string, method: string = HttpMethod.GET, params: any = {}, bod
     .then(response => response.json()).catch(async error => {
       blockUiUtil.hide();
       if (error.response && (error.response.status === HttpStatus.AUTHORIZATION_ERROR || error.response.status === HttpStatus.FORBIDDEN)) {
-        try {
-          const response: any = await fetch(process.env.api_url + '/api/v1/auth/refresh');
-          StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.json().accessToken);
-          StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.json().refreshToken);
-        } catch (refreshError) {
-          throw refreshError;
-        }
+        fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
+          promise.json().then(response => {
+            StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+            StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+          });
+        });
       }
       throw error;
     });
@@ -79,11 +103,11 @@ function api(url: string, method: string = HttpMethod.GET, params: any = {}, bod
 
 class Api {
   post = (url: string, withToken: boolean = true, body: any) => {
-    return api(url, HttpMethod.POST, {}, body, withToken, {});
+    return api(url, HttpMethod.POST, null, body, withToken, {});
   }
 
   get = (url: string, withToken: boolean = true, params: any = {}) => {
-    return api(url, HttpMethod.GET, params, {}, withToken, {});
+    return api(url, HttpMethod.GET, params, null, withToken, {});
   }
 
   put = (url: string, withToken: boolean = true, params: any = {}, body: any = {}) => {
@@ -91,7 +115,7 @@ class Api {
   }
 
   delete = (url: string, withToken: boolean = true, params: any = {}) => {
-    return api(url, HttpMethod.DELETE, params, {}, withToken, {});
+    return api(url, HttpMethod.DELETE, params, null, withToken, {});
   }
 }
 

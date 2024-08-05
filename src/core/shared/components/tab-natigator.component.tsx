@@ -68,9 +68,6 @@ const TabNavigatorComponent = ({ state, descriptors, navigation }: any) => {
                   justifyContent: 'center'
                 }}>
                   <IIcon name={iconName} size={iconSize} color={isFocused ? 'blue' : 'black'} />
-                  <Text style={{ color: isFocused ? 'blue' : 'black', fontSize: route.name === 'qr-code' ? 14 : 12 }}>
-                    {label}
-                  </Text>
                 </View>
               </>
             )}
