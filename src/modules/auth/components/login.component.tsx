@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlexView, HeaderText, SizedBox } from "../../../core/shared/shared.styles";
 import LoginRequest from "../dtos/login-request.dto.ts";
@@ -10,7 +10,6 @@ import toastUtil from "../../../core/utils/toast.util.ts";
 import authService from "../../../core/services/auth.service.ts";
 import enums from "../../../core/enums/enums.ts";
 import StorageUtil from "../../../core/utils/storage.util.ts";
-import ApiConfig from "../../../core/configs/api.config.ts";
 import SharedPreferencesUtil from "../../../core/utils/shared-preferences.util.ts";
 
 
@@ -33,9 +32,9 @@ const LoginComponent = ({ navigation }: any) => {
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     blockUiUtil.show();
-    authService.login(request).then(async response => {
+    authService.login(request).then(response => {
       if (response.message.status == enums.MessageStatus.ERROR) {
         toastUtil.showToast(response.message);
         blockUiUtil.hide();
@@ -49,7 +48,6 @@ const LoginComponent = ({ navigation }: any) => {
         });
       }
     });
-    //navigation.navigate('main');
   }
 
   return (

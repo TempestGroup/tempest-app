@@ -34,8 +34,11 @@ const getLanguage = () => {
 }
 
 const getUrl = (url: string, params: any = {}) => {
-  let queryParams = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-  return url + (queryParams ? '?' + queryParams : '');
+  if (params != null) {
+    let queryParams = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+    return url + (queryParams ? '?' + queryParams : '');
+  }
+  return url;
 }
 
 const getContentType = (body: any = {}) => {

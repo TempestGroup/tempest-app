@@ -7,6 +7,8 @@ import Person from "../../dtos/person.dto.ts";
 import LanguageUtil from "../../../../core/utils/language.util.ts";
 import Card from "../../../../core/shared/components/card.component.tsx";
 import { SizedBox } from "../../../../core/shared/shared.styles.tsx";
+import { CommonActions } from "@react-navigation/native";
+import SharedPreferencesUtil from "../../../../core/utils/shared-preferences.util.ts";
 
 const ProfileComponent = ({ navigation }: any) => {
   const [person, setPerson] = useState(new Person());
@@ -21,6 +23,19 @@ const ProfileComponent = ({ navigation }: any) => {
     }
     fetchPerson();
   }, []);
+
+  const handleLogout = () => {
+    SharedPreferencesUtil.clear().then(ignored => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: 'login' },
+          ],
+        })
+      );
+    });
+  }
 
   return (
     <View>
@@ -39,7 +54,7 @@ const ProfileComponent = ({ navigation }: any) => {
         </Card>
       </TouchableOpacity>
       <SizedBox line={2}/>
-      <TouchableOpacity onPress={ () => navigation.navigate('settings') }>
+      <TouchableOpacity onPress={handleLogout}>
         <Card style={{backgroundColor: 'red', alignItems: 'center'}}>
           <Text style={ styles.logout }>{ LanguageUtil.getMessage('app.section.logout') }</Text>
         </Card>
