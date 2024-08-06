@@ -50,13 +50,6 @@ const MainComponent = () => {
         }}
         component={ ProfileComponent }
       />
-      <Tab.Screen
-        name={ 'person' }
-        options={{
-          title: 'Profile',
-        }}
-        component={ ProfileComponent }
-      />
     </Tab.Navigator>
   );
 }

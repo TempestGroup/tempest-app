@@ -1,5 +1,9 @@
 {
-  "kazakh": "Kazakh",
-  "russian": "Russian",
-  "english": "English"
+  "app.language.kazakh": "Kazakh",
+  "app.language.russian": "Russian",
+  "app.language.english": "English",
+  "app.label.email": "Email",
+  "app.label.roles": "User's roles",
+  "app.section.settings": "Settings",
+  "app.section.logout": "Log out"
 }

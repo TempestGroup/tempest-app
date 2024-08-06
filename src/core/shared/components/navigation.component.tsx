@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { enableScreens } from 'react-native-screens';
@@ -14,6 +14,8 @@ import i18n from "../../configs/i18n.config.ts";
 import { createStackNavigator } from "@react-navigation/stack";
 import IPicker from "./picker.component.tsx";
 import LanguageUtil from "../../utils/language.util.ts";
+import SettingsComponent from "../../../modules/settings/components/settings.component.tsx";
+import IIconButton from "./icon-button.component.tsx";
 
 enableScreens();
 
@@ -52,8 +54,18 @@ const AppNavigator = function () {
           />
           <Stack.Screen
             name="settings"
-            component={ MainComponent }
-            options={{ headerShown: true, title: 'Settings' }}
+            component={ SettingsComponent }
+            options={({navigation}) => ({
+              headerShown: true,
+              title: LanguageUtil.getMessage('app.section.settings'),
+              headerLeft: () => (
+                <IIconButton
+                  onPress={() => navigation.goBack()}
+                  color={'black'}
+                  size={25}
+                  icon={"arrow-back-outline"}
+                />
+              ), })}
           />
         </Stack.Navigator>
         <Toast config={toastConfig} />

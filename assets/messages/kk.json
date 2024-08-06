@@ -1,5 +1,9 @@
 {
-  "kazakh": "Қазақ тілі",
-  "russian": "Орыс тілі",
-  "english": "Ағылшын тілі"
+  "app.language.kazakh": "Қазақ тілі",
+  "app.language.russian": "Орыс тілі",
+  "app.language.english": "Ағылшын тілі",
+  "app.label.email": "Электрондық пошта",
+  "app.label.roles": "Пайдаланушы рөлдері",
+  "app.section.settings": "Параметрлер",
+  "app.section.logout": "Шығу"
 }

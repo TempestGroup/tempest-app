@@ -1,0 +1,13 @@
+{
+  "path": "./assets/icon.png",
+  "platforms": {
+    "ios": {
+      "path": "./ios/YourProjectName/Images.xcassets/AppIcon.appiconset",
+      "filename": "icon.png"
+    },
+    "android": {
+      "path": "./android/app/src/main/res",
+      "filename": "ic_launcher.png"
+    }
+  }
+}

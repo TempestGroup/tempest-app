@@ -1,6 +1,5 @@
 import SharedPreferencesUtil from "./shared-preferences.util.ts";
 import i18n from '../configs/i18n.config.ts';
-import enums from "../enums/enums.ts";
 
 class LanguageUtil {
 
@@ -10,9 +9,9 @@ class LanguageUtil {
 
   static getLanguages(): any[] {
     return [
-      { label: i18n.t('russian'), value: 'ru' },
-      { label: i18n.t('kazakh'), value: 'kk' },
-      { label: i18n.t('english'), value: 'en' }
+      { label: i18n.t('app.language.russian'), value: 'ru' },
+      { label: i18n.t('app.language.kazakh'), value: 'kk' },
+      { label: i18n.t('app.language.english'), value: 'en' }
     ];
   }
 
@@ -32,6 +31,10 @@ class LanguageUtil {
     } catch (error) {
       console.error('Error setting language:', error);
     }
+  }
+
+  static getMessage(s: string) {
+    return i18n.t(`${s}`);
   }
 }
 
