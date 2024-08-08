@@ -5,5 +5,19 @@
   "app.label.email": "Email",
   "app.label.roles": "User's roles",
   "app.section.settings": "Settings",
-  "app.section.logout": "Log out"
+  "app.section.logout": "Log out",
+  "app.section.person_information": "Personal information",
+  "app.nav.home": "Home",
+  "app.nav.menu": "Menu",
+  "app.nav.chats": "Chats",
+  "app.nav.profile": "Profile",
+  "app.label.name.cyrillic": "Name (cyrillic)",
+  "app.label.name.latin": "Name (latin)",
+  "app.label.lastname.cyrillic": "Lastname (cyrillic)",
+  "app.label.lastname.latin": "Lastname (latin)",
+  "app.label.phone": "Phone number",
+  "app.label.iin": "IIN",
+  "app.label.iin.exist": "IIN is exist",
+  "app.label.city": "City",
+  "app.label.nationality": "Nationality"
 }

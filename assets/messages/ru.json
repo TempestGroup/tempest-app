@@ -5,5 +5,19 @@
   "app.label.email": "Электронная почта",
   "app.label.roles": "Роли пользователя",
   "app.section.settings": "Настройки",
-  "app.section.logout": "Выйти"
+  "app.section.logout": "Выйти",
+  "app.section.person_information": "Персональная информация",
+  "app.nav.home": "Главная",
+  "app.nav.menu": "Меню",
+  "app.nav.chats": "Чаты",
+  "app.nav.profile": "Профиль",
+  "app.label.name.cyrillic": "Имя (кириллица)",
+  "app.label.name.latin": "Имя (латиница)",
+  "app.label.lastname.cyrillic": "Фамилия (кириллица)",
+  "app.label.lastname.latin": "Фамилия (латиница)",
+  "app.label.phone": "Номер телефона",
+  "app.label.iin": "ИИН",
+  "app.label.iin.exist": "ИИН существует",
+  "app.label.city": "Город",
+  "app.label.nationality": "Национальность"
 }

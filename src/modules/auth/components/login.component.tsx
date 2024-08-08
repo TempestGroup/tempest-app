@@ -10,7 +10,6 @@ import toastUtil from "../../../core/utils/toast.util.ts";
 import authService from "../../../core/services/auth.service.ts";
 import enums from "../../../core/enums/enums.ts";
 import StorageUtil from "../../../core/utils/storage.util.ts";
-import SharedPreferencesUtil from "../../../core/utils/shared-preferences.util.ts";
 
 
 const LoginComponent = ({ navigation }: any) => {
@@ -39,13 +38,12 @@ const LoginComponent = ({ navigation }: any) => {
         toastUtil.showToast(response.message);
         blockUiUtil.hide();
       } else {
-        SharedPreferencesUtil.set(SharedPreferencesUtil.USER_MOBILE_TOKEN, response.token.mobileToken).then(ignored => {
-          StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
-          StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
-          toastUtil.showToast(response.message);
-          blockUiUtil.hide();
-          navigation.navigate('main');
-        });
+        StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+        StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+        StorageUtil.save(StorageUtil.USER_MOBILE_TOKEN, response.token.mobileToken);
+        toastUtil.showToast(response.message);
+        blockUiUtil.hide();
+        navigation.navigate('main');
       }
     });
   }

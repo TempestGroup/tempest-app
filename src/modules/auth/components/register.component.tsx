@@ -11,13 +11,31 @@ import enums from "../../../core/enums/enums.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import RestUtil from "../../../core/utils/rest.util.ts";
 import FileUtil from "../../../core/utils/file.util.ts";
+import * as ImagePicker from "react-native-image-picker";
 
 const RegisterComponent = ({ navigation }: any) => {
 
   const [request, setRequest] = useState(new RegisterRequest());
 
   const handleImagePicker = () => {
-    setRequest({ ...request, image: FileUtil.handlePicker('photo') });
+    ImagePicker.launchImageLibrary({ mediaType: 'photo' }, async (response: any) => {
+      if (response.didCancel) {
+        return null;
+      } else if (response.error) {
+        return null;
+      } else if (response.customButton) {
+        return null;
+      } else {
+        if (response.assets && response.assets.length > 0) {
+          const source =  {
+            uri: response.assets[0].uri,
+            type: response.assets[0].type,
+            name: response.assets[0].fileName
+          };
+          setRequest({ ...request, image: source });
+        }
+      }
+    });
   };
 
   const handleSubmit = async () => {

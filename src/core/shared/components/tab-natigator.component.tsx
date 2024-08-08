@@ -23,6 +23,8 @@ const TabNavigatorComponent = ({ state, descriptors, navigation }: any) => {
 
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
+          } else {
+            navigation.reset({ index: 0, routes: [{ name: route.name }] });
           }
         };
 

@@ -24,8 +24,6 @@ class FileUtil {
             type: response.assets[0].type,
             name: response.assets[0].fileName
           };
-        } else {
-          return null;
         }
       }
     });

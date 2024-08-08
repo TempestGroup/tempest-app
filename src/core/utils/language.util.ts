@@ -1,5 +1,5 @@
-import SharedPreferencesUtil from "./shared-preferences.util.ts";
 import i18n from '../configs/i18n.config.ts';
+import storageUtil from "./storage.util.ts";
 
 class LanguageUtil {
 
@@ -16,25 +16,15 @@ class LanguageUtil {
   }
 
   static getCurrentLanguage() {
-    let lang = this.RUSSIAN_LANGUAGE;
-    SharedPreferencesUtil.get(SharedPreferencesUtil.APP_LANGUAGE).then(language => {
-      lang = language ?? i18n.language;
-    });
-    return lang;
+    return storageUtil.getString(storageUtil.APP_LANGUAGE) ?? i18n.language;
   }
 
   static setCurrentLanguage(language: string = this.RUSSIAN_LANGUAGE) {
-    try {
-      SharedPreferencesUtil.set(SharedPreferencesUtil.APP_LANGUAGE, language).then(async ignored => {
-        await i18n.changeLanguage(language);
-      });
-    } catch (error) {
-      console.error('Error setting language:', error);
-    }
+    storageUtil.save(storageUtil.APP_LANGUAGE, language);
   }
 
-  static getMessage(s: string) {
-    return i18n.t(`${s}`);
+  static getMessage(key: string, options = {}) {
+    return i18n.t(key, options);
   }
 }
 

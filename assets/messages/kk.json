@@ -5,5 +5,19 @@
   "app.label.email": "Электрондық пошта",
   "app.label.roles": "Пайдаланушы рөлдері",
   "app.section.settings": "Параметрлер",
-  "app.section.logout": "Шығу"
+  "app.section.logout": "Шығу",
+  "app.section.person_information": "Жеке ақпарат",
+  "app.nav.home": "Басты бет",
+  "app.nav.menu": "Мәзір",
+  "app.nav.chats": "Чаттар",
+  "app.nav.profile": "Профиль",
+  "app.label.name.cyrillic": "Аты (кириллица)",
+  "app.label.name.latin": "Аты (латын)",
+  "app.label.lastname.cyrillic": "Тегі (кириллица)",
+  "app.label.lastname.latin": "Тегі (латын)",
+  "app.label.phone": "Телефон нөмірі",
+  "app.label.iin": "ЖСН",
+  "app.label.iin.exist": "ЖСН бар",
+  "app.label.city": "Қала",
+  "app.label.nationality": "Ұлты"
 }

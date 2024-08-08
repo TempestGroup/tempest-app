@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import authService from "../../../../core/services/auth.service.ts";
 import blockUiUtil from "../../../../core/utils/block-ui.util.ts";
@@ -8,7 +8,8 @@ import LanguageUtil from "../../../../core/utils/language.util.ts";
 import Card from "../../../../core/shared/components/card.component.tsx";
 import { SizedBox } from "../../../../core/shared/shared.styles.tsx";
 import { CommonActions } from "@react-navigation/native";
-import SharedPreferencesUtil from "../../../../core/utils/shared-preferences.util.ts";
+import { IProfileImage } from "../../../../core/shared/components/image.component.tsx";
+import storageUtil from "../../../../core/utils/storage.util.ts";
 
 const ProfileComponent = ({ navigation }: any) => {
   const [person, setPerson] = useState(new Person());
@@ -25,29 +26,34 @@ const ProfileComponent = ({ navigation }: any) => {
   }, []);
 
   const handleLogout = () => {
-    SharedPreferencesUtil.clear().then(ignored => {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            { name: 'login' },
-          ],
-        })
-      );
-    });
+    storageUtil.clear();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'login' },
+        ],
+      })
+    );
   }
 
   return (
-    <View>
+    <SafeAreaView>
+      <View style={ styles.profileImage }>
+        <IProfileImage personID={person.id} width={200} height={200} radius={200} />
+      </View>
       <Card>
         <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
         <Text style={ styles.data }>{ person.email }</Text>
-      </Card>
-      <Card>
+        <SizedBox/>
         <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.roles') }</Text>
         <Text style={ styles.data }>{ StringUtil.join(person.roles, ', ') }</Text>
       </Card>
-      <SizedBox line={2}/>
+      <TouchableOpacity onPress={ () => {navigation.navigate('personInformation'); storageUtil.save('test', true) }}>
+        <Card>
+          <Text style={ styles.section }>{ LanguageUtil.getMessage('app.section.person_information') }</Text>
+        </Card>
+      </TouchableOpacity>
       <TouchableOpacity onPress={ () => navigation.navigate('settings') }>
         <Card>
           <Text style={ styles.section }>{ LanguageUtil.getMessage('app.section.settings') }</Text>
@@ -59,11 +65,16 @@ const ProfileComponent = ({ navigation }: any) => {
           <Text style={ styles.logout }>{ LanguageUtil.getMessage('app.section.logout') }</Text>
         </Card>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  profileImage: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20
+  },
   label: {
     fontSize: 14,
     color: '#333',

@@ -6,10 +6,12 @@ class StorageUtil {
   DEFAULT_LANGUAGE = 'ru';
   USER_ACCESS_TOKEN = 'user.token.access';
   USER_REFRESH_TOKEN = 'user.token.refresh';
-  USER_ID = 'user.id';
+  IS_EDITING_MODE_PERSON_INFO = 'app.user.person_information.mode.edit';
+  USER_MOBILE_TOKEN = 'user.mobile.token';
+  APP_LANGUAGE = 'app.language';
 
   storage: MMKV = new MMKV();
-  save (key: string, value: any) {
+  save(key: string, value: any) {
     this.storage.set(key, value);
   };
 
@@ -27,6 +29,10 @@ class StorageUtil {
 
   remove(key: string) {
     this.storage.delete(key);
+  };
+
+  clear() {
+    this.storage.clearAll();
   };
 }
 

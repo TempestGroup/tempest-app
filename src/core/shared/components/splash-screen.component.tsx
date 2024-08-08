@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import SharedPreferencesUtil from "../../utils/shared-preferences.util.ts";
 import StringUtil from "../../utils/string.util.ts";
 import StorageUtil from "../../utils/storage.util.ts";
 // @ts-ignore
 import { process } from 'react-native-dotenv';
+import storageUtil from "../../utils/storage.util.ts";
 
 const getRefreshOptions = (options: any = {}, token: string) => {
   let headers = {
@@ -22,19 +22,17 @@ const getRefreshOptions = (options: any = {}, token: string) => {
 const SplashScreen = ({ navigation }: any) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      SharedPreferencesUtil.get(SharedPreferencesUtil.USER_MOBILE_TOKEN).then(value => {
-        if (StringUtil.isEmpty(value)) {
-          navigation.replace('login');
-        } else {
-          fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions({}, `${value}`)).then(promise => {
-            promise.json().then(response => {
-              StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
-              StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
-              navigation.replace('main');
-            });
+      if (StringUtil.isEmpty(storageUtil.getString(storageUtil.USER_MOBILE_TOKEN))) {
+        navigation.replace('login');
+      } else {
+        fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions({}, `${storageUtil.getString(storageUtil.USER_MOBILE_TOKEN)}`)).then(promise => {
+          promise.json().then(response => {
+            StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+            StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+            navigation.replace('main');
           });
-        }
-      });
+        });
+      }
     }, 3000);
     return () => clearTimeout(timer);
   }, [navigation]);

@@ -14,8 +14,10 @@ import i18n from "../../configs/i18n.config.ts";
 import { createStackNavigator } from "@react-navigation/stack";
 import IPicker from "./picker.component.tsx";
 import LanguageUtil from "../../utils/language.util.ts";
-import SettingsComponent from "../../../modules/settings/components/settings.component.tsx";
+import SettingsComponent from "../../../modules/additionals/components/settings.component.tsx";
 import IIconButton from "./icon-button.component.tsx";
+import PersonInformationComponent from "../../../modules/additionals/components/person-information.component.tsx";
+import storageUtil from "../../utils/storage.util.ts";
 
 enableScreens();
 
@@ -66,6 +68,25 @@ const AppNavigator = function () {
                   icon={"arrow-back-outline"}
                 />
               ), })}
+          />
+          <Stack.Screen
+            name="personInformation"
+            component={ PersonInformationComponent }
+            options={({navigation, route}) => ({
+              headerShown: true,
+              title: LanguageUtil.getMessage('app.section.person_information'),
+              headerLeft: () => (
+                <IIconButton
+                  onPress={() => {
+                    storageUtil.save(storageUtil.IS_EDITING_MODE_PERSON_INFO, false);
+                    navigation.goBack();
+                  }}
+                  color={'black'}
+                  size={25}
+                  icon={"arrow-back-outline"}
+                />
+              )
+            })}
           />
         </Stack.Navigator>
         <Toast config={toastConfig} />

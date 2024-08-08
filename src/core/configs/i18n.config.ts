@@ -3,6 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import en from '../../../assets/messages/en.json';
 import ru from '../../../assets/messages/ru.json';
 import kk from '../../../assets/messages/kk.json';
+import storageUtil from "../utils/storage.util.ts";
+import LanguageUtil from "../utils/language.util.ts";
 
 const resources = {
   en: {
@@ -20,7 +22,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'ru',
+    lng: storageUtil.getString(storageUtil.APP_LANGUAGE) ?? 'ru',
     fallbackLng: 'ru',
     compatibilityJSON: 'v3',
     interpolation: {

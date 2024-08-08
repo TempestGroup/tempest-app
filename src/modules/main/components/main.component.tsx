@@ -14,39 +14,43 @@ const Tab = createBottomTabNavigator();
 
 const MainComponent = () => {
   return (
-    <Tab.Navigator initialRouteName="Home" tabBar={(props: any) => <TabNavigatorComponent {...props} />}>
+    <Tab.Navigator initialRouteName="home" tabBar={(props: any) => <TabNavigatorComponent {...props} />}>
       <Tab.Screen
         name={ 'home' }
         options={{
-          title: 'Home'
+          title: LanguageUtil.getMessage('app.nav.home'),
+          headerShown: false
         }}
         component={ HomeComponent }
       />
       <Tab.Screen
         name={ 'menu' }
         options={{
-          title: 'Menu'
+          title: LanguageUtil.getMessage('app.nav.menu'),
+          headerShown: true
         }}
         component={ MenuComponent }
       />
       <Tab.Screen
         name={ 'qr-code' }
         options={{
-          title: 'QR'
+          headerShown: false
         }}
         component={ QRComponent }
       />
       <Tab.Screen
         name={ 'chatbubbles' }
         options={{
-          title: 'Chat'
+          title: LanguageUtil.getMessage('app.nav.chats'),
+          headerShown: true
         }}
         component={ ChatComponent }
       />
       <Tab.Screen
         name={ 'person' }
         options={{
-          title: 'Profile'
+          title: LanguageUtil.getMessage('app.nav.profile'),
+          headerShown: false
         }}
         component={ ProfileComponent }
       />
