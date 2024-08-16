@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { View, TouchableOpacity, Text } from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 

@@ -1,0 +1,113 @@
+{
+  "app.language.kazakh": {
+    "en": "Kazakh",
+    "kk": "Қазақ тілі",
+    "ru": "Казахский"
+  },
+  "app.language.russian": {
+    "en": "Russian",
+    "kk": "Орыс тілі",
+    "ru": "Русский"
+  },
+  "app.language.english": {
+    "en": "English",
+    "kk": "Ағылшын тілі",
+    "ru": "Английский"
+  },
+  "app.label.email": {
+    "en": "Email",
+    "kk": "Электрондық пошта",
+    "ru": "Электронная почта"
+  },
+  "app.label.roles": {
+    "en": "User's roles",
+    "kk": "Пайдаланушы рөлдері",
+    "ru": "Роли пользователя"
+  },
+  "app.section.settings": {
+    "en": "Settings",
+    "kk": "Параметрлер",
+    "ru": "Настройки"
+  },
+  "app.section.logout": {
+    "en": "Log out",
+    "kk": "Шығу",
+    "ru": "Выйти"
+  },
+  "app.section.person_information": {
+    "en": "Personal information",
+    "kk": "Жеке ақпарат",
+    "ru": "Персональная информация"
+  },
+  "app.nav.home": {
+    "en": "Home",
+    "kk": "Басты бет",
+    "ru": "Главная"
+  },
+  "app.nav.menu": {
+    "en": "Menu",
+    "kk": "Мәзір",
+    "ru": "Меню"
+  },
+  "app.nav.chats": {
+    "en": "Chats",
+    "kk": "Чаттар",
+    "ru": "Чаты"
+  },
+  "app.nav.profile": {
+    "en": "Profile",
+    "kk": "Профиль",
+    "ru": "Профиль"
+  },
+  "app.label.name.cyrillic": {
+    "en": "Name (cyrillic)",
+    "kk": "Аты (кириллица)",
+    "ru": "Имя (кириллица)"
+  },
+  "app.label.name.latin": {
+    "en": "Name (latin)",
+    "kk": "Аты (латын)",
+    "ru": "Имя (латиница)"
+  },
+  "app.label.lastname.cyrillic": {
+    "en": "Lastname (cyrillic)",
+    "kk": "Тегі (кириллица)",
+    "ru": "Фамилия (кириллица)"
+  },
+  "app.label.lastname.latin": {
+    "en": "Lastname (latin)",
+    "kk": "Тегі (латын)",
+    "ru": "Фамилия (латиница)"
+  },
+  "app.label.phone": {
+    "en": "Phone number",
+    "kk": "Телефон нөмірі",
+    "ru": "Номер телефона"
+  },
+  "app.label.iin": {
+    "en": "",
+    "kk": "ЖСН",
+    "ru": "ИИН"
+  },
+  "app.label.iin.exist": {
+    "en": "",
+    "kk": "ЖСН бар",
+    "ru": "ИИН существует"
+  },
+  "app.label.city": {
+    "en": "City",
+    "kk": "Қала",
+    "ru": "Город"
+  },
+  "app.label.nationality": {
+    "en": "Nationality",
+    "kk": "Ұлты",
+    "ru": "Национальность"
+  },
+  "app.label.language": {
+    "en": "Language",
+    "kk": "Тіл",
+    "ru": "Язык"
+  }
+}
+

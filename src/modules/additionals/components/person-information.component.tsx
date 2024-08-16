@@ -2,73 +2,76 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ITextField from "../../../core/shared/components/text-field.component.tsx";
 import Card from "../../../core/shared/components/card.component.tsx";
-import LanguageUtil from "../../../core/utils/language.util.ts";
 import { PersonInfo } from "../dtos/person-info.dto.ts";
 import FloatButton from "../../../core/shared/components/float-button.component.tsx";
 import { SizedBox } from "../../../core/shared/shared.styles.tsx";
+import blockUiUtil from "../../../core/utils/block-ui.util.ts";
+import personService from "../../../core/services/person.service.ts";
+import toastUtil from "../../../core/utils/toast.util.ts";
+import { useTranslation } from "react-i18next";
 
 const PersonInformationComponent = () => {
   const [isEditing, setEditing] = useState(false);
   const [request, setRequest] = useState(new PersonInfo());
-  const handleSubmit = () => {
+  const { t } = useTranslation();
 
+  useEffect(() => {
+    const getPersonInfo = () => {
+      blockUiUtil.show();
+      personService.getPersonInformation().then(response => {
+        setRequest(response.information);
+        blockUiUtil.hide();
+      });
+    }
+    getPersonInfo();
+  }, []);
+
+  const handleSubmit = () => {
+    blockUiUtil.show();
+    personService.savePersonInformation(request).then(response => {
+      toastUtil.showToast(response.message);
+      blockUiUtil.hide();
+    });
   }
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <Card>
-          {/* IIN */}
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
 
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'IIN'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          {/* Name */}
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name (latin)'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          {/* Lastname */}
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name (latin)'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          {/* Surname */}
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name (latin)'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
+          <Text style={ styles.label }>{ t('app.label.name.cyrillic') }</Text>
+          <ITextField editable={isEditing}  width={'98%'} textContentType={'text'} value={ request.nameCyrillic }
+                      onChangeText={(nameCyrillic: string) => setRequest({ ...request, nameCyrillic })}/>
 
-          {/* Surname */}
+          <Text style={ styles.label }>{ t('app.label.name.latin') }</Text>
+          <ITextField editable={isEditing}  width={'98%'} textContentType={'text'} value={ request.nameLatin }
+                      onChangeText={(nameLatin: string) => setRequest({ ...request, nameLatin })}/>
 
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
-          <Text style={ styles.label }>{ LanguageUtil.getMessage('app.label.email') }</Text>
-          <ITextField editable={isEditing}  width={'98%'} placeholder={'Name (latin)'}
-                      textContentType={'text'} value={request.name}
-                      onChangeText={(name: string) => setRequest({...request, name: name})}/>
+          <Text style={ styles.label }>{ t('app.label.lastname.cyrillic') }</Text>
+          <ITextField editable={isEditing}  width={'98%'} textContentType={'text'} value={ request.lastnameCyrillic }
+                      onChangeText={(lastnameCyrillic: string) => setRequest({ ...request, lastnameCyrillic })}/>
+
+          <Text style={ styles.label }>{ t('app.label.lastname.latin') }</Text>
+          <ITextField editable={isEditing}  width={'98%'} textContentType={'text'} value={ request.lastnameLatin }
+                      onChangeText={(lastnameLatin: string) => setRequest({ ...request, lastnameLatin })}/>
+
+          <Text style={ styles.label }>{ t('app.label.phone') }</Text>
+          <ITextField editable={isEditing}  width={'98%'} textContentType={'text'} value={ request.phoneNumber }
+                      onChangeText={(phoneNumber: string) => setRequest({...request, phoneNumber })}/>
+
+          {/*<Text style={ styles.label }>{ t('app.label.nationality') }</Text>*/}
+          {/*<ISelect selectedValue={request.nationalityID}/>*/}
+
+          {/*<Text style={ styles.label }>{ t('app.label.city') }</Text>*/}
+          {/*<ISelect selectedValue={request.nationalityID}/>*/}
         </Card>
         <SizedBox line={2}/>
       </ScrollView>
       <FloatButton icon={isEditing ? 'checkmark' : 'pencil'} color={'white'}
        onPress={() => {
-        if (isEditing) {}
+        if (isEditing) {
+          handleSubmit();
+        }
         setEditing(!isEditing);
        }}
       />

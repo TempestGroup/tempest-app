@@ -21,6 +21,7 @@
     "dotenv": "^16.4.5",
     "events": "^3.3.0",
     "i18next": "^23.12.2",
+    "i18next-react-native-language-detector": "^1.0.2",
     "install": "^0.13.0",
     "intl": "^1.2.5",
     "npm": "^10.8.1",

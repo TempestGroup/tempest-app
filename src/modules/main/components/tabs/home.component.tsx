@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { SafeAreaView, Text } from "react-native";
 import StorageUtil from "../../../../core/utils/storage.util.ts";
 

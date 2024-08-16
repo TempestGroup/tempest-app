@@ -9,9 +9,9 @@ class LanguageUtil {
 
   static getLanguages(): any[] {
     return [
-      { label: i18n.t('app.language.russian'), value: 'ru' },
-      { label: i18n.t('app.language.kazakh'), value: 'kk' },
-      { label: i18n.t('app.language.english'), value: 'en' }
+      { label: 'app.language.russian', value: 'ru' },
+      { label: 'app.language.kazakh', value: 'kk' },
+      { label: 'app.language.english', value: 'en' }
     ];
   }
 
@@ -21,10 +21,6 @@ class LanguageUtil {
 
   static setCurrentLanguage(language: string = this.RUSSIAN_LANGUAGE) {
     storageUtil.save(storageUtil.APP_LANGUAGE, language);
-  }
-
-  static getMessage(key: string, options = {}) {
-    return i18n.t(key, options);
   }
 }
 

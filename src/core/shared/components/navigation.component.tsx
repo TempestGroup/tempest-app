@@ -1,7 +1,5 @@
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
-import { enableScreens } from 'react-native-screens';
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
 import LoginComponent from '../../../modules/auth/components/login.component.tsx';
 import RegisterComponent from '../../../modules/auth/components/register.component.tsx';
 import Toast from "react-native-toast-message";
@@ -9,17 +7,13 @@ import ILoader from "./loader.component.tsx";
 import IToast from "./toast.component.tsx";
 import MainComponent from "../../../modules/main/components/main.component.tsx";
 import SplashScreen from "./splash-screen.component.tsx";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "../../configs/i18n.config.ts";
 import { createStackNavigator } from "@react-navigation/stack";
-import IPicker from "./picker.component.tsx";
-import LanguageUtil from "../../utils/language.util.ts";
 import SettingsComponent from "../../../modules/additionals/components/settings.component.tsx";
 import IIconButton from "./icon-button.component.tsx";
 import PersonInformationComponent from "../../../modules/additionals/components/person-information.component.tsx";
 import storageUtil from "../../utils/storage.util.ts";
-
-enableScreens();
 
 const Stack = createStackNavigator();
 
@@ -30,6 +24,7 @@ const toastConfig = {
 };
 
 const AppNavigator = function () {
+  const { t }: any = useTranslation();
   return (
     <I18nextProvider i18n={i18n}>
       <NavigationContainer>
@@ -59,7 +54,7 @@ const AppNavigator = function () {
             component={ SettingsComponent }
             options={({navigation}) => ({
               headerShown: true,
-              title: LanguageUtil.getMessage('app.section.settings'),
+              title: t('app.section.settings'),
               headerLeft: () => (
                 <IIconButton
                   onPress={() => navigation.goBack()}
@@ -74,7 +69,7 @@ const AppNavigator = function () {
             component={ PersonInformationComponent }
             options={({navigation, route}) => ({
               headerShown: true,
-              title: LanguageUtil.getMessage('app.section.person_information'),
+              title: t('app.section.person_information'),
               headerLeft: () => (
                 <IIconButton
                   onPress={() => {

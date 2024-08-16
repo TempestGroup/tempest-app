@@ -10,7 +10,6 @@ import authService from "../../../core/services/auth.service.ts";
 import enums from "../../../core/enums/enums.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import RestUtil from "../../../core/utils/rest.util.ts";
-import FileUtil from "../../../core/utils/file.util.ts";
 import * as ImagePicker from "react-native-image-picker";
 
 const RegisterComponent = ({ navigation }: any) => {
