@@ -4,10 +4,9 @@ import { Image } from 'react-native';
 import { process } from 'react-native-dotenv';
 
 export const IProfileImage = ({ personID = 0, height = 50, width = 50, radius = 0 }: any) => {
-  personID = (personID != null || personID != undefined) ? personID : 0;
   return (
     <Image
-      source={{ uri: process.env.api_url + '/api/v1/auth/images/' + personID  }}
+      source={{ uri: (process.env.api_url + '/api/v1/auth/images/' + personID) }}
       style={{ width: width, height: height, borderRadius: radius }}
     />
   );

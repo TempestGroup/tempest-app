@@ -10,6 +10,7 @@ import { CommonActions, useFocusEffect } from "@react-navigation/native";
 import { IProfileImage } from "../../../../core/shared/components/image.component.tsx";
 import storageUtil from "../../../../core/utils/storage.util.ts";
 import { useTranslation } from "react-i18next";
+import LoadingBar from "../../../../core/shared/components/loading.component.tsx";
 
 
 const ProfileComponent = ({ navigation }: any) => {
@@ -45,7 +46,10 @@ const ProfileComponent = ({ navigation }: any) => {
   return (
     <SafeAreaView>
       <View style={ styles.profileImage }>
-        <IProfileImage personID={person.id} width={200} height={200} radius={200} />
+        {
+          person.id != null || person.id != undefined ?
+            (<IProfileImage personID={person.id} width={200} height={200} radius={200} />) : (<LoadingBar/>)
+        }
       </View>
       <Card>
         <Text style={ styles.label }>{ t('app.label.email') }</Text>
