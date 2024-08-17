@@ -48,8 +48,12 @@ const ProfileComponent = ({ navigation }: any) => {
       <View style={ styles.profileImage }>
         {
           person.id != null || person.id != undefined ?
-            (<IProfileImage personID={person.id} width={200} height={200} radius={200} />) : (<LoadingBar/>)
+            (<IProfileImage personID={person.id} width={200} height={200} radius={200} />) :
+            (<LoadingBar/>)
         }
+      </View>
+      <View style={ styles.name }>
+        <Text style={ styles.nameText }>{ person.name }</Text>
       </View>
       <Card>
         <Text style={ styles.label }>{ t('app.label.email') }</Text>
@@ -83,6 +87,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20
+  },
+  name: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginStart: 20,
+    marginEnd: 20,
+    marginBottom: 20
+  },
+  nameText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333'
   },
   label: {
     fontSize: 14,

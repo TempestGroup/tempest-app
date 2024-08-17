@@ -3,6 +3,7 @@ class Person {
   email: string = '';
   roles: [] = [];
   image: string = '';
+  name: string = '';
 }
 
 export default Person;
