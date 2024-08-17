@@ -47,7 +47,7 @@ const ProfileComponent = ({ navigation }: any) => {
     <SafeAreaView>
       <View style={ styles.profileImage }>
         {
-          (person.id == null || person.id == undefined) ?
+          (person.id == null || person.id == undefined || person.id == 0) ?
             <LoadingBar /> :
             <IProfileImage personID={person.id} width={200} height={200} radius={200} />
         }
