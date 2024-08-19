@@ -2,6 +2,10 @@ import StorageUtil from '../utils/storage.util';
 // @ts-ignore
 import { process } from 'react-native-dotenv';
 import blockUiUtil from "../utils/block-ui.util.ts";
+import { CommonActions, createNavigationContainerRef } from "@react-navigation/native";
+import toastUtil from "../utils/toast.util.ts";
+import enums from "../enums/enums.ts";
+import i18n from '../configs/i18n.config.ts';
 
 const HttpMethod = {
   GET: 'GET',
@@ -49,6 +53,8 @@ const getBody = (body: any = {}) => {
   return body instanceof FormData ? body : JSON.stringify(body);
 }
 
+const navigationRef = createNavigationContainerRef();
+
 const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
   let headers = {
     'Content-Type': getContentType(body),
@@ -90,15 +96,42 @@ const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, opti
 function api(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}) {
   console.log("Fetching: ", getUrl(process.env.api_url + url, params), '. Options: ', getOptions(method, body, options, withToken))
   return fetch(getUrl(process.env.api_url + url, params), getOptions(method, body, options, withToken))
-    .then(response => response.json()).catch(async error => {
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).catch(async error => {
       blockUiUtil.hide();
-      if (error.response && (error.response.status === HttpStatus.AUTHORIZATION_ERROR || error.response.status === HttpStatus.FORBIDDEN)) {
+      if (error.response && (error.response.status == HttpStatus.AUTHORIZATION_ERROR || error.response.status == HttpStatus.FORBIDDEN)) {
         fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
           promise.json().then(response => {
             StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
             StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+            api(url, method, params, body, withToken, options);
           });
+        }).catch(error => {
+          if (error.response) {
+            navigationRef.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  { name: 'splash' },
+                ],
+              })
+            );
+          }
         });
+      } else if (error instanceof TypeError && error.message === 'Network request failed') {
+        toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
+        navigationRef.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              { name: 'login' },
+            ],
+          })
+        );
       }
       throw error;
     });

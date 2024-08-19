@@ -108,6 +108,11 @@
     "en": "Language",
     "kk": "Тіл",
     "ru": "Язык"
+  },
+  "app.network.error": {
+    "en": "Please check your internet connection and try again!",
+    "ru": "Пожалуйста, проверьте подключение к Интернету и повторите попытку!",
+    "kk": "Интернет байланысын тексеріп, әрекетті қайталаңыз!"
   }
 }
 

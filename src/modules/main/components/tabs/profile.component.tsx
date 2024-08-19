@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import authService from "../../../../core/services/auth.service.ts";
 import blockUiUtil from "../../../../core/utils/block-ui.util.ts";
 import StringUtil from "../../../../core/utils/string.util.ts";
@@ -47,7 +47,7 @@ const ProfileComponent = ({ navigation }: any) => {
     <SafeAreaView>
       <View style={ styles.profileImage }>
         {
-          (person.id == null || person.id == undefined || person.id == 0) ?
+          (person.id == undefined || person.id == null || person.id == 0) ?
             <LoadingBar /> :
             <IProfileImage personID={person.id} width={200} height={200} radius={200} />
         }
