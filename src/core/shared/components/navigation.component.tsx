@@ -14,6 +14,7 @@ import SettingsComponent from "../../../modules/additionals/components/settings.
 import IIconButton from "./icon-button.component.tsx";
 import PersonInformationComponent from "../../../modules/additionals/components/person-information.component.tsx";
 import storageUtil from "../../utils/storage.util.ts";
+import navigationRef from "../../configs/navigation.config.ts";
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ const AppNavigator = function () {
   const { t }: any = useTranslation();
   return (
     <I18nextProvider i18n={i18n}>
-      <NavigationContainer>
+      <NavigationContainer ref={ navigationRef }>
         <Stack.Navigator initialRouteName="splash">
           <Stack.Screen
             name="splash"

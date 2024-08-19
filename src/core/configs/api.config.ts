@@ -2,10 +2,11 @@ import StorageUtil from '../utils/storage.util';
 // @ts-ignore
 import { process } from 'react-native-dotenv';
 import blockUiUtil from "../utils/block-ui.util.ts";
-import { CommonActions, createNavigationContainerRef } from "@react-navigation/native";
+import { CommonActions, createNavigationContainerRef, useNavigation } from "@react-navigation/native";
 import toastUtil from "../utils/toast.util.ts";
 import enums from "../enums/enums.ts";
 import i18n from '../configs/i18n.config.ts';
+import navigationRef from "./navigation.config.ts";
 
 const HttpMethod = {
   GET: 'GET',
@@ -53,8 +54,6 @@ const getBody = (body: any = {}) => {
   return body instanceof FormData ? body : JSON.stringify(body);
 }
 
-const navigationRef = createNavigationContainerRef();
-
 const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
   let headers = {
     'Content-Type': getContentType(body),
@@ -93,6 +92,17 @@ const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, opti
   }
 }
 
+function getCurrentRouteName() {
+  const { current } = navigationRef;
+  if (!current || !current.getRootState) {
+    return null;
+  }
+  const state = current.getRootState();
+  const routes = state.routes;
+  const currentRoute = routes[state.index] || {};
+  return currentRoute.name;
+}
+
 function api(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}) {
   console.log("Fetching: ", getUrl(process.env.api_url + url, params), '. Options: ', getOptions(method, body, options, withToken))
   return fetch(getUrl(process.env.api_url + url, params), getOptions(method, body, options, withToken))
@@ -124,14 +134,16 @@ function api(url: string, method: string = HttpMethod.GET, params: any = {}, bod
         });
       } else if (error instanceof TypeError && error.message === 'Network request failed') {
         toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
-        navigationRef.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              { name: 'login' },
-            ],
-          })
-        );
+        if (getCurrentRouteName() != 'login') {
+          navigationRef.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [
+                { name: 'login' },
+              ],
+            })
+          );
+        }
       }
       throw error;
     });
