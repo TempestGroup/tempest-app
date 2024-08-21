@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import IIcon from "./icon.component.tsx";
 
-const ITextField = ({ placeholder, value = '', onChangeText, secureTextEntry = false, keyboardType, width = '150%', maxLength, ...rest }: any) => {
+const ITextField = ({ placeholder, value = '', onChangeText, secureTextEntry = false, keyboardType, width = '150%', maxLength, editable, ...rest }: any) => {
   const [showPassword, setShowPassword] = useState(false);
   return(
     <View style={styles.container}>
-      <TextInput style={{...styles.input, width: width}} onChangeText={onChangeText}
+      <TextInput style={{...styles.input, width: width, backgroundColor: (editable ? 'white' : '#e4e4e4') }} onChangeText={onChangeText}
                       value={value}
+                      editable={editable}
                       placeholder={placeholder}
                       secureTextEntry={ secureTextEntry || (rest.textContentType == 'password' && !showPassword) }
                       keyboardType={keyboardType}

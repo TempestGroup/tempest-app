@@ -72,7 +72,6 @@ const ProfileComponent = ({ navigation }: any) => {
           <Text style={ styles.section }>{ t('app.section.settings') }</Text>
         </Card>
       </TouchableOpacity>
-      <SizedBox line={2}/>
       <TouchableOpacity onPress={handleLogout}>
         <Card style={{backgroundColor: 'red', alignItems: 'center'}}>
           <Text style={ styles.logout }>{ t('app.section.logout') }</Text>
