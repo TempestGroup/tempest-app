@@ -1,6 +1,6 @@
 import StorageUtil from '../utils/storage.util';
 // @ts-ignore
-import { process } from 'react-native-dotenv';
+import { APIURL } from '@env';
 import blockUiUtil from "../utils/block-ui.util.ts";
 import { CommonActions, createNavigationContainerRef, useNavigation } from "@react-navigation/native";
 import toastUtil from "../utils/toast.util.ts";
@@ -34,6 +34,10 @@ const getRefreshToken = () => {
   return StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN);
 }
 
+const getMobileToken = () => {
+  return StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN);
+}
+
 const getLanguage = () => {
   return StorageUtil.getString(StorageUtil.LANGUAGE) == undefined ? StorageUtil.DEFAULT_LANGUAGE : StorageUtil.getString(StorageUtil.LANGUAGE);
 }
@@ -57,6 +61,7 @@ const getBody = (body: any = {}) => {
 const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
   let headers = {
     'Content-Type': getContentType(body),
+    'Device-Type': 'MOBILE',
     Language: getLanguage(),
     ...options.headers
   };
@@ -76,11 +81,32 @@ const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: an
 const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
   let headers = {
     'Content-Type': getContentType(body),
+    'Device-Type': 'MOBILE',
     Language: getLanguage(),
     ...options.headers
   };
   if (withToken) {
     headers.Token = getRefreshToken();
+  }
+  if (body != null && Object.keys(body).length > 0) {
+    options.body = getBody(body);
+  }
+  return {
+    method: method,
+    headers,
+    ...options
+  }
+}
+
+const getMobileRequestOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
+  let headers = {
+    'Content-Type': getContentType(body),
+    'Device-Type': 'MOBILE',
+    Language: getLanguage(),
+    ...options.headers
+  };
+  if (withToken) {
+    headers.Token = getMobileToken();
   }
   if (body != null && Object.keys(body).length > 0) {
     options.body = getBody(body);
@@ -104,32 +130,44 @@ function getCurrentRouteName() {
 }
 
 function api(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}) {
-  console.log("Fetching: ", getUrl(process.env.api_url + url, params), '. Options: ', getOptions(method, body, options, withToken))
-  return fetch(getUrl(process.env.api_url + url, params), getOptions(method, body, options, withToken))
+  console.log("Fetching: ", getUrl(APIURL + url, params), '. Options: ', getOptions(method, body, options, withToken))
+  return fetch(getUrl(APIURL + url, params), getOptions(method, body, options, withToken))
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
       return response.json();
     }).catch(async error => {
       blockUiUtil.hide();
       if (error.response && (error.response.status == HttpStatus.AUTHORIZATION_ERROR || error.response.status == HttpStatus.FORBIDDEN)) {
-        fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
+        fetch(APIURL + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
           promise.json().then(response => {
             StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
             StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
             api(url, method, params, body, withToken, options);
           });
+          return promise.json();
         }).catch(error => {
           if (error.response) {
-            navigationRef.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [
-                  { name: 'splash' },
-                ],
-              })
-            );
+            if (error.response.status == HttpStatus.AUTHORIZATION_ERROR || error.response.status == HttpStatus.FORBIDDEN) {
+              fetch(APIURL + '/api/v1/auth/refresh', getMobileRequestOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
+                promise.json().then(response => {
+                  StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+                  StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+                  api(url, method, params, body, withToken, options);
+                });
+                return promise.json();
+              });
+            } else if (error instanceof TypeError && error.message === 'Network request failed') {
+              toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
+              if (getCurrentRouteName() != 'login') {
+                navigationRef.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [
+                      { name: 'login' },
+                    ],
+                  })
+                );
+              }
+            }
           }
         });
       } else if (error instanceof TypeError && error.message === 'Network request failed') {

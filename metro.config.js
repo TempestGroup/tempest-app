@@ -6,6 +6,18 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
+const path = require('path');
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+// Custom configuration
+const customConfig = {
+  resolver: {
+    extraNodeModules: {
+      path: require.resolve('path-browserify'),
+    },
+  },
+};
+
+// Merging default and custom configurations
+const config = mergeConfig(getDefaultConfig(__dirname), customConfig);
+
+module.exports = config;

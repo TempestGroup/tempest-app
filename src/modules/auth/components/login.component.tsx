@@ -34,6 +34,7 @@ const LoginComponent = ({ navigation }: any) => {
   const handleSubmit = () => {
     blockUiUtil.show();
     authService.login(request).then(response => {
+      console.log(response)
       if (response.message.status == enums.MessageStatus.ERROR) {
         toastUtil.showToast(response.message);
         blockUiUtil.hide();

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Image } from 'react-native';
 // @ts-ignore
-import { process } from 'react-native-dotenv';
+import { APIURL } from '@env';
 
 export const IProfileImage = ({ personID = 0, height = 50, width = 50, radius = 0 }: any) => {
   const imageSource = personID === 0
     ? require('../../../../assets/logo/userDefLogo.png')
-    : { uri: `${process.env.api_url}/api/v1/auth/images/${personID}` };
+    : { uri: `${APIURL}/api/v1/auth/images/${personID}` };
   return (
     <Image
       source={ imageSource }

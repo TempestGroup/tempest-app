@@ -3,16 +3,16 @@ import { View, StyleSheet, Text } from "react-native";
 import StringUtil from "../../utils/string.util.ts";
 import StorageUtil from "../../utils/storage.util.ts";
 // @ts-ignore
-import { process } from 'react-native-dotenv';
+import { APIURL } from '@env';
 import storageUtil from "../../utils/storage.util.ts";
 import toastUtil from "../../utils/toast.util.ts";
 import i18n from "../../configs/i18n.config.ts";
 import enums from "../../enums/enums.ts";
-import { CommonActions } from "@react-navigation/native";
 
-const getRefreshOptions = (options: any = {}, token: string) => {
+const getOptions = (options: any = {}, token: string) => {
   let headers = {
     'Content-Type': 'application/json',
+    'Device-Type': 'MOBILE',
     Token: token,
     ...options.headers
   };
@@ -29,15 +29,12 @@ const SplashScreen = ({ navigation }: any) => {
       if (StringUtil.isEmpty(storageUtil.getString(storageUtil.USER_MOBILE_TOKEN))) {
         navigation.replace('login');
       } else {
-        fetch(process.env.api_url + '/api/v1/auth/refresh', getRefreshOptions({}, `${storageUtil.getString(storageUtil.USER_MOBILE_TOKEN)}`)).then(promise => {
-          if (!promise.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return promise.json();
-        }).then(response => {
-          StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
-          StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
-          navigation.replace('main');
+        fetch(APIURL + '/api/v1/auth/refresh', getOptions({}, `${storageUtil.getString(storageUtil.USER_MOBILE_TOKEN)}`)).then(promise => {
+          promise.json().then(response => {
+            StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+            StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+            navigation.replace('main');
+          });
         }).catch(error => {
           if (error instanceof TypeError && error.message === 'Network request failed') {
             toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 10000);

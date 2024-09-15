@@ -1,9 +1,9 @@
 // @ts-ignore
-import { process } from 'react-native-dotenv';
+import { APIURL } from '@env';
 import blockUiUtil from "../utils/block-ui.util.ts";
 
 function instance(url: string, onOpen = () => {}, onMessage = () => {}, onError = (error: any) => {}, onClose = () => {}) {
-  const socket = new WebSocket(process.env.api_url + url);
+  const socket = new WebSocket(APIURL + url);
   socket.onopen = onOpen;
   socket.onmessage = onMessage;
   socket.onerror = onError;
