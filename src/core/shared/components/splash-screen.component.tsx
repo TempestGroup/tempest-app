@@ -30,7 +30,13 @@ const SplashScreen = ({ navigation }: any) => {
         navigation.replace('login');
       } else {
         fetch(APIURL + '/api/v1/auth/refresh', getOptions({}, `${storageUtil.getString(storageUtil.USER_MOBILE_TOKEN)}`)).then(promise => {
-          promise.json().then(response => {
+          if (!promise.ok) {
+            return promise.json().then(message => {
+              toastUtil.showToast(message);
+              navigation.replace('login');
+            });
+          }
+          return promise.json().then(response => {
             StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
             StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
             navigation.replace('main');

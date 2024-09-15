@@ -30,6 +30,10 @@ const getToken = () => {
   return StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN);
 }
 
+const getRefreshToken = () => {
+  return StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN);
+}
+
 const getMobileToken = () => {
   return StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN);
 }
@@ -74,7 +78,7 @@ const getOptions = (method: string = HttpMethod.GET, body: any = {}, options: an
   }
 }
 
-const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
+const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true, withMobileToken: boolean = false) => {
   let headers = {
     'Content-Type': getContentType(body),
     'Device-Type': 'MOBILE',
@@ -82,7 +86,7 @@ const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, opti
     ...options.headers
   };
   if (withToken) {
-    headers.Token = getMobileToken();
+    headers.Token = withMobileToken ? getMobileToken() : getRefreshToken();
   }
   if (body != null && Object.keys(body).length > 0) {
     options.body = getBody(body);
@@ -105,10 +109,30 @@ function getCurrentRouteName() {
   return currentRoute.name;
 }
 
+function mobileTokenAndRetry(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}): any {
+  return fetch(APIURL + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true, true))
+    .then(res => {
+      return res.json().then(response => {
+        StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+        StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+        return api(url, method, params, body, withToken, options);
+      });
+    }).catch(error => {
+      handleAuthError(error);
+      throw error;
+    });
+}
+
 function refreshTokenAndRetry(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}): any {
   return fetch(APIURL + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true))
-    .then(promise => {
-      return promise.json().then(response => {
+    .then(res => {
+      if (!res.ok) {
+        if (res.status === HttpStatus.AUTHORIZATION_ERROR) {
+          return mobileTokenAndRetry(url, method, params, body, withToken, options);
+        }
+        return handleAuthError(res);
+      }
+      return res.json().then(response => {
         StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
         StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
         return api(url, method, params, body, withToken, options);
