@@ -30,10 +30,6 @@ const getToken = () => {
   return StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_ACCESS_TOKEN);
 }
 
-const getRefreshToken = () => {
-  return StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_REFRESH_TOKEN);
-}
-
 const getMobileToken = () => {
   return StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN) == undefined ? null : StorageUtil.getString(StorageUtil.USER_MOBILE_TOKEN);
 }
@@ -86,26 +82,6 @@ const getRefreshOptions = (method: string = HttpMethod.GET, body: any = {}, opti
     ...options.headers
   };
   if (withToken) {
-    headers.Token = getRefreshToken();
-  }
-  if (body != null && Object.keys(body).length > 0) {
-    options.body = getBody(body);
-  }
-  return {
-    method: method,
-    headers,
-    ...options
-  }
-}
-
-const getMobileRequestOptions = (method: string = HttpMethod.GET, body: any = {}, options: any = {}, withToken: boolean = true) => {
-  let headers = {
-    'Content-Type': getContentType(body),
-    'Device-Type': 'MOBILE',
-    Language: getLanguage(),
-    ...options.headers
-  };
-  if (withToken) {
     headers.Token = getMobileToken();
   }
   if (body != null && Object.keys(body).length > 0) {
@@ -129,60 +105,58 @@ function getCurrentRouteName() {
   return currentRoute.name;
 }
 
+function refreshTokenAndRetry(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}): any {
+  return fetch(APIURL + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true))
+    .then(promise => {
+      return promise.json().then(response => {
+        StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
+        StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
+        return api(url, method, params, body, withToken, options);
+      });
+    }).catch(error => {
+      handleAuthError(error);
+      throw error;
+    });
+}
+
+function handleAuthError(error: any) {
+  if (error.status === HttpStatus.AUTHORIZATION_ERROR) {
+    if (getCurrentRouteName() !== 'splash') {
+      navigationRef.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'splash' }] }));
+    }
+  } else if (error instanceof TypeError && error.message === 'Network request failed') {
+    toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
+    if (getCurrentRouteName() != 'splash') {
+      navigationRef.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            { name: 'splash' },
+          ],
+        })
+      );
+    }
+  }
+}
+
 function api(url: string, method: string = HttpMethod.GET, params: any = {}, body: any = {}, withToken: boolean = true, options: any = {}) {
   console.log("Fetching: ", getUrl(APIURL + url, params), '. Options: ', getOptions(method, body, options, withToken))
   return fetch(getUrl(APIURL + url, params), getOptions(method, body, options, withToken))
     .then(response => {
-      return response.json();
-    }).catch(async error => {
-      blockUiUtil.hide();
-      if (error.response && (error.response.status == HttpStatus.AUTHORIZATION_ERROR || error.response.status == HttpStatus.FORBIDDEN)) {
-        fetch(APIURL + '/api/v1/auth/refresh', getRefreshOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
-          promise.json().then(response => {
-            StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
-            StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
-            api(url, method, params, body, withToken, options);
-          });
-          return promise.json();
-        }).catch(error => {
-          if (error.response) {
-            if (error.response.status == HttpStatus.AUTHORIZATION_ERROR || error.response.status == HttpStatus.FORBIDDEN) {
-              fetch(APIURL + '/api/v1/auth/refresh', getMobileRequestOptions(HttpMethod.POST, {}, {}, true)).then(promise => {
-                promise.json().then(response => {
-                  StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
-                  StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
-                  api(url, method, params, body, withToken, options);
-                });
-                return promise.json();
-              });
-            } else if (error instanceof TypeError && error.message === 'Network request failed') {
-              toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
-              if (getCurrentRouteName() != 'login') {
-                navigationRef.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [
-                      { name: 'login' },
-                    ],
-                  })
-                );
-              }
-            }
-          }
-        });
-      } else if (error instanceof TypeError && error.message === 'Network request failed') {
-        toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
-        if (getCurrentRouteName() != 'login') {
-          navigationRef.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [
-                { name: 'login' },
-              ],
-            })
-          );
+      if (!response.ok) {
+        blockUiUtil.hide();
+        if (response.status === HttpStatus.AUTHORIZATION_ERROR) {
+          return refreshTokenAndRetry(url, method, params, body, withToken, options);
         }
+        return response.json().then(message => {
+          toastUtil.showToast(message);
+          handleAuthError(response);
+        });
       }
+      return response.json();
+    }).catch(error => {
+      blockUiUtil.hide();
+      handleAuthError(error);
       throw error;
     });
 }
