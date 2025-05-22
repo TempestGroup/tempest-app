@@ -8,8 +8,9 @@ import { useTranslation } from "react-i18next";
 const SettingsComponent = () => {
   const { t, i18n } = useTranslation();
   const changeCurrentLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-    LanguageUtil.setCurrentLanguage(language);
+    i18n.changeLanguage(language).then(r => {
+      LanguageUtil.setCurrentLanguage(language);
+    });
   }
 
   return (

@@ -9,6 +9,8 @@ import blockUiUtil from "../../../core/utils/block-ui.util.ts";
 import personService from "../../../core/services/person.service.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import { useTranslation } from "react-i18next";
+import BlockUIUtil from "../../../core/utils/block-ui.util.ts";
+import ToastUtil from "../../../core/utils/toast.util.ts";
 
 const PersonInformationComponent = () => {
   const [isEditing, setEditing] = useState(false);
@@ -17,20 +19,20 @@ const PersonInformationComponent = () => {
 
   useEffect(() => {
     const getPersonInfo = () => {
-      blockUiUtil.show();
+      BlockUIUtil.show();
       personService.getPersonInformation().then(response => {
         setRequest(response.information);
-        blockUiUtil.hide();
+        BlockUIUtil.hide();
       });
     }
     getPersonInfo();
   }, []);
 
   const handleSubmit = () => {
-    blockUiUtil.show();
+    BlockUIUtil.show();
     personService.savePersonInformation(request).then(response => {
-      toastUtil.showToast(response.message);
-      blockUiUtil.hide();
+      ToastUtil.showToast(response.message);
+      BlockUIUtil.hide();
     });
   }
 

@@ -11,6 +11,7 @@ import { IProfileImage } from "../../../../core/shared/components/image.componen
 import storageUtil from "../../../../core/utils/storage.util.ts";
 import { useTranslation } from "react-i18next";
 import LoadingBar from "../../../../core/shared/components/loading.component.tsx";
+import BlockUiUtil from "../../../../core/utils/block-ui.util.ts";
 
 
 const ProfileComponent = ({ navigation }: any) => {
@@ -18,10 +19,10 @@ const ProfileComponent = ({ navigation }: any) => {
   const { t } = useTranslation();
 
   const fetchPerson = () => {
-    blockUiUtil.show();
+    BlockUiUtil.show();
     authService.info().then(response => {
       setPerson(response.person);
-      blockUiUtil.hide();
+      BlockUiUtil.hide();
     });
   }
 

@@ -8,6 +8,7 @@ import storageUtil from "../../utils/storage.util.ts";
 import toastUtil from "../../utils/toast.util.ts";
 import i18n from "../../configs/i18n.config.ts";
 import enums from "../../enums/enums.ts";
+import ToastUtil from "../../utils/toast.util.ts";
 
 const getOptions = (options: any = {}, token: string) => {
   let headers = {
@@ -32,7 +33,7 @@ const SplashScreen = ({ navigation }: any) => {
         fetch(APIURL + '/api/v1/auth/refresh', getOptions({}, `${storageUtil.getString(storageUtil.USER_MOBILE_TOKEN)}`)).then(promise => {
           if (!promise.ok) {
             return promise.json().then(message => {
-              toastUtil.showToast(message);
+              ToastUtil.showToast(message);
               navigation.replace('login');
             });
           }
@@ -43,7 +44,7 @@ const SplashScreen = ({ navigation }: any) => {
           });
         }).catch(error => {
           if (error instanceof TypeError && error.message === 'Network request failed') {
-            toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 10000);
+            ToastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 10000);
             navigation.replace('login');
           }
           throw error;

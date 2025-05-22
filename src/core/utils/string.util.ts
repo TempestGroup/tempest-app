@@ -1,4 +1,3 @@
-/* eslint-disable no-trailing-spaces */
 class StringUtil {
 
   static isEmpty(s: string | null | undefined) {
@@ -19,8 +18,8 @@ class StringUtil {
     return s.split('\n').length;
   }
 
-  static join(collection: [], separator: string) {
-    return collection.join(separator);
+  static join(collection?: any[], separator?: string) {
+    return collection!.join(separator);
   }
 
 }

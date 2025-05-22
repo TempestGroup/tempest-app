@@ -5,11 +5,11 @@ import { FlexView, HeaderText, SizedBox } from "../../../core/shared/shared.styl
 import LoginRequest from "../dtos/login-request.dto.ts";
 import ITextField from "../../../core/shared/components/text-field.component.tsx";
 import IButton from "../../../core/shared/components/button.component.tsx";
-import blockUiUtil from "../../../core/utils/block-ui.util.ts";
-import toastUtil from "../../../core/utils/toast.util.ts";
 import authService from "../../../core/services/auth.service.ts";
 import enums from "../../../core/enums/enums.ts";
 import StorageUtil from "../../../core/utils/storage.util.ts";
+import ToastUtil from "../../../core/utils/toast.util.ts";
+import BlockUiUtil from "../../../core/utils/block-ui.util.ts";
 
 
 const LoginComponent = ({ navigation }: any) => {
@@ -32,20 +32,16 @@ const LoginComponent = ({ navigation }: any) => {
   }
 
   const handleSubmit = () => {
-    blockUiUtil.show();
+    BlockUiUtil.show();
     authService.login(request).then(response => {
-      console.log(response)
+      ToastUtil.showToast(response.message);
       if (response.message.status == enums.MessageStatus.ERROR) {
-        toastUtil.showToast(response.message);
-        blockUiUtil.hide();
-      } else {
         StorageUtil.save(StorageUtil.USER_ACCESS_TOKEN, response.token.accessToken);
         StorageUtil.save(StorageUtil.USER_REFRESH_TOKEN, response.token.refreshToken);
         StorageUtil.save(StorageUtil.USER_MOBILE_TOKEN, response.token.mobileToken);
-        toastUtil.showToast(response.message);
-        blockUiUtil.hide();
         navigation.navigate('main');
       }
+      BlockUiUtil.hide();
     });
   }
 

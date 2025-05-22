@@ -7,6 +7,8 @@ import toastUtil from "../utils/toast.util.ts";
 import enums from "../enums/enums.ts";
 import i18n from '../configs/i18n.config.ts';
 import navigationRef from "./navigation.config.ts";
+import ToastUtil from "../utils/toast.util.ts";
+import BlockUiUtil from "../utils/block-ui.util.ts";
 
 const HttpMethod = {
   GET: 'GET',
@@ -149,7 +151,7 @@ function handleAuthError(error: any) {
       navigationRef.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'splash' }] }));
     }
   } else if (error instanceof TypeError && error.message === 'Network request failed') {
-    toastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
+    ToastUtil.showToast({ content: i18n.t('app.network.error'), status: enums.MessageStatus.ERROR }, 5000);
     if (getCurrentRouteName() != 'splash') {
       navigationRef.dispatch(
         CommonActions.reset({
@@ -168,18 +170,18 @@ function api(url: string, method: string = HttpMethod.GET, params: any = {}, bod
   return fetch(getUrl(APIURL + url, params), getOptions(method, body, options, withToken))
     .then(response => {
       if (!response.ok) {
-        blockUiUtil.hide();
+        BlockUiUtil.hide();
         if (response.status === HttpStatus.AUTHORIZATION_ERROR) {
           return refreshTokenAndRetry(url, method, params, body, withToken, options);
         }
         return response.json().then(message => {
-          toastUtil.showToast(message);
+          ToastUtil.showToast(message);
           handleAuthError(response);
         });
       }
       return response.json();
     }).catch(error => {
-      blockUiUtil.hide();
+      BlockUiUtil.hide();
       handleAuthError(error);
       throw error;
     });

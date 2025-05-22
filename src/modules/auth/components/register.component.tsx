@@ -11,6 +11,8 @@ import enums from "../../../core/enums/enums.ts";
 import toastUtil from "../../../core/utils/toast.util.ts";
 import RestUtil from "../../../core/utils/rest.util.ts";
 import * as ImagePicker from "react-native-image-picker";
+import ToastUtil from "../../../core/utils/toast.util.ts";
+import BlockUiUtil from "../../../core/utils/block-ui.util.ts";
 
 const RegisterComponent = ({ navigation }: any) => {
 
@@ -38,15 +40,13 @@ const RegisterComponent = ({ navigation }: any) => {
   };
 
   const handleSubmit = async () => {
-    blockUiUtil.show();
+    BlockUiUtil.show();
     authService.register(RestUtil.getFormData(request)).then(response => {
-      if (response.message.status == enums.MessageStatus.ERROR) {
-        toastUtil.showToast(response.message);
-      } else {
-        toastUtil.showToast(response.message);
+      ToastUtil.showToast(response.message);
+      if (response.message.status != enums.MessageStatus.ERROR) {
         navigation.navigate('login');
       }
-      blockUiUtil.hide();
+      BlockUiUtil.hide();
     });
   }
 

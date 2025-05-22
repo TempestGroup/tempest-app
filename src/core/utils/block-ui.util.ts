@@ -10,5 +10,5 @@ class BlockUI extends EventEmitter {
   }
 }
 
-const blockUI = new BlockUI();
-export default blockUI;
+const BlockUIUtil = new BlockUI();
+export default BlockUIUtil;

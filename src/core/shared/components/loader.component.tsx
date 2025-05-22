@@ -1,7 +1,7 @@
 // Loader.js
 import React, { useEffect, useState } from "react";
 import { View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
-import blockUI from "../../utils/block-ui.util.ts";
+import BlockUIUtil from "../../utils/block-ui.util.ts";
 
 const ILoader = () => {
   const [visible, setVisible] = useState(false);
@@ -10,12 +10,12 @@ const ILoader = () => {
     const handleShow = () => setVisible(true);
     const handleHide = () => setVisible(false);
 
-    blockUI.on('show', handleShow);
-    blockUI.on('hide', handleHide);
+    BlockUIUtil.on('show', handleShow);
+    BlockUIUtil.on('hide', handleHide);
 
     return () => {
-      blockUI.off('show', handleShow);
-      blockUI.off('hide', handleHide);
+      BlockUIUtil.off('show', handleShow);
+      BlockUIUtil.off('hide', handleHide);
     };
   }, []);
   return (
